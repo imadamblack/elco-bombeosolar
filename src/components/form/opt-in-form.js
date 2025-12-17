@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { getCookie, setCookie } from 'cookies-next';
 import { useState } from 'react';
 import { emailRegExp, restrictNumber } from '../../utils/formValidators';
-import fbEvent from '../../services/fbEvents';
+import fbEvent, { gtagSendEvent } from '../../services/fbEvents';
 
 export default function OptInForm({lastClick = ''}) {
   const [sending, setSending] = useState(false);
@@ -36,10 +36,9 @@ export default function OptInForm({lastClick = ''}) {
     }).then((result) => result.json())
       // Send FB Event
       .then(({id}) => {
-        fbEvent(
-          'Lead',
-          {email: data.email, phone: data.phone, externalID: id},
-        );
+        const userData = {email: data.email, phone: data.phone, externalID: id}
+        fbEvent('Lead', userData);
+        gtagSendEvent('KTQ4CPClh9MbEP3jsKxC', userData)
         setCookie('lead', {...data, id});
 
         const forwardLink = document.createElement('a');
@@ -52,10 +51,9 @@ export default function OptInForm({lastClick = ''}) {
         // router.push(`/survey?id=${id}`);
       })
       .catch(() => {
-        fbEvent(
-          'Lead',
-          {email: data.email, phone: data.phone, externalID: ''},
-        );
+        const userData = {email: data.email, phone: data.phone, externalID: ''}
+        fbEvent('Lead', userData);
+        gtagSendEvent('KTQ4CPClh9MbEP3jsKxC', userData)
         setCookie('lead', {...data});
 
         const forwardLink = document.createElement('a');

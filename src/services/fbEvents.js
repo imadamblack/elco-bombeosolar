@@ -46,7 +46,7 @@ export function gtagSendEvent(conversionId, data = {}) {
   });
 
   gtag('event', 'conversion', {
-    send_to: `AW-17649963646/${conversionId}`,
+    send_to: `AW-17809814013/${conversionId}`,
     event_callback: () => {},
   });
 
