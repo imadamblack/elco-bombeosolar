@@ -62,8 +62,6 @@ export default function OptInForm({lastClick = ''}) {
         forwardLink.click();
 
         router.push('/thankyou');
-
-        router.push(`/thankyou`);
       })
   };
 
