@@ -291,3 +291,53 @@ export default function Index() {
     </>
   );
 }
+
+export async function getServerSideProps(ctx) {
+  const { req, query } = ctx;
+  const cookiesHeader = req.headers.cookie || '';
+
+  const keys = ['utm', '_fbc', '_fbp', 'lead'];
+  const cookies = {};
+
+  for (const key of keys) {
+    const raw = cookiesHeader
+      .split('; ')
+      .find(c => c.startsWith(`${key}=`))
+      ?.split('=')[1];
+
+    if (!raw) continue;
+
+    try {
+      const clean = raw.startsWith('j%3A') ? raw.slice(4) : raw;
+      cookies[key] = JSON.parse(decodeURIComponent(clean));
+    } catch {
+      cookies[key] = decodeURIComponent(raw);
+    }
+  }
+
+  // --- Revisar params UTM del query ---
+  const utmFromQuery = {};
+  ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => {
+    if (query[param]) utmFromQuery[param] = query[param];
+  });
+
+  // Si hay params en la URL, se usan; si no, cae en cookie
+  const utm =
+    Object.keys(utmFromQuery).length > 0
+      ? utmFromQuery
+      : cookies.utm ?? null;
+
+  const { lead } = cookies;
+
+  return {
+    props: {
+      lead: {
+        fullName: lead?.fullName ?? '',
+        phone: lead?.phone ?? '',
+        whatsapp: lead?.whatsapp ?? '',
+        sheetRow: lead?.sheetRow ?? '',
+      },
+      utm,
+    },
+  };
+}
