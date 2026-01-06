@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { emailRegExp, restrictNumber } from '../../utils/formValidators';
 import fbEvent, { gtagSendEvent } from '../../services/fbEvents';
 
-export default function OptInForm({lastClick = ''}) {
+export default function OptInForm({lastClick = '', utm = {}}) {
   const [sending, setSending] = useState(false);
   const router = useRouter();
   const methods = useForm({mode: 'all'});
@@ -25,7 +25,7 @@ export default function OptInForm({lastClick = ''}) {
 
     const _fbc = getCookie('_fbc');
     const _fbp = getCookie('_fbp');
-    const payload = {...data, _fbc, _fbp};
+    const payload = {...data, _fbc, _fbp, ...utm};
 
     fetch(info.optInWebhook, {
       method: 'POST',
