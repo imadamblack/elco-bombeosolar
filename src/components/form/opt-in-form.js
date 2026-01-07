@@ -67,6 +67,8 @@ export default function OptInForm({lastClick = '', utm = {}}) {
       });
   };
 
+  console.log(errors);
+
   return (
     <FormProvider {...methods}>
       <form className="flex flex-col w-full space-y-4" onSubmit={handleSubmit(onSubmit)}>
@@ -119,10 +121,13 @@ export default function OptInForm({lastClick = '', utm = {}}) {
         <input
           {...register(
             'hectare',
+            {min: {value: 2, message: 'Para menos de 2 hectáreas no es rentable el sistema'}}
           )}
+          type="number"
           className={errors.hectare && '!bg-red-200'}
           onKeyDown={restrictNumber}
-          placeholder="Hectáreas (en número)"/>
+          placeholder="Hectareas que necesitas regar? (número)"/>
+        <span className="-ft-2 text-red-500">{errors.hectare?.message}</span>
 
         <button
           disabled={sending}
