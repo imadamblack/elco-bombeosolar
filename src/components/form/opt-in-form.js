@@ -6,6 +6,8 @@ import { getCookie, setCookie } from 'cookies-next';
 import { useState } from 'react';
 import { emailRegExp, restrictNumber } from '../../utils/formValidators';
 import fbEvent, { gtagSendEvent } from '../../services/fbEvents';
+import { Select } from './formAtoms';
+import { mexicanStates } from '../../catalogs/mexican-states';
 
 export default function OptInForm({lastClick = '', utm = {}}) {
   const [sending, setSending] = useState(false);
@@ -36,9 +38,9 @@ export default function OptInForm({lastClick = '', utm = {}}) {
     }).then((result) => result.json())
       // Send FB Event
       .then(({id}) => {
-        const userData = {email: data.email, phone: data.phone, externalID: id}
+        const userData = {email: data.email, phone: data.phone, externalID: id};
         fbEvent('Lead', userData);
-        gtagSendEvent('KTQ4CPClh9MbEP3jsKxC', userData)
+        gtagSendEvent('KTQ4CPClh9MbEP3jsKxC', userData);
         setCookie('lead', {...data, id});
 
         const forwardLink = document.createElement('a');
@@ -51,9 +53,9 @@ export default function OptInForm({lastClick = '', utm = {}}) {
         // router.push(`/survey?id=${id}`);
       })
       .catch(() => {
-        const userData = {email: data.email, phone: data.phone, externalID: ''}
+        const userData = {email: data.email, phone: data.phone, externalID: ''};
         fbEvent('Lead', userData);
-        gtagSendEvent('KTQ4CPClh9MbEP3jsKxC', userData)
+        gtagSendEvent('KTQ4CPClh9MbEP3jsKxC', userData);
         setCookie('lead', {...data});
 
         const forwardLink = document.createElement('a');
@@ -62,7 +64,7 @@ export default function OptInForm({lastClick = '', utm = {}}) {
         forwardLink.click();
 
         router.push('/thankyou');
-      })
+      });
   };
 
   return (
@@ -98,6 +100,29 @@ export default function OptInForm({lastClick = '', utm = {}}) {
           className={errors.phone && '!bg-red-200'}
           onKeyDown={restrictNumber}
           placeholder="Numero de WhatsApp"/>
+        <Select
+          options={mexicanStates}
+          name="state"
+          inputOptions={{required: true}}
+          placeholder="Selecciona un estado"
+          className={`rounded-md px-6 py-4 bg-white ${errors.state && '!bg-red-200'}`}
+        />
+
+        <input
+          {...register(
+            'city',
+            {required: true},
+          )}
+          className={errors.city && '!bg-red-200'}
+          placeholder="Ciudad o localidad"/>
+
+        <input
+          {...register(
+            'hectare',
+          )}
+          className={errors.hectare && '!bg-red-200'}
+          onKeyDown={restrictNumber}
+          placeholder="Hectáreas (en número)"/>
 
         <button
           disabled={sending}
