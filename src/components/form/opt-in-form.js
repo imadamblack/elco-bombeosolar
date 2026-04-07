@@ -102,21 +102,53 @@ export default function OptInForm({lastClick = '', utm = {}}) {
           className={errors.phone && '!bg-red-200'}
           onKeyDown={restrictNumber}
           placeholder="Numero de WhatsApp"/>
+        <div className="grid grid-cols-2 gap-4">
+          <Select
+            options={mexicanStates}
+            name="state"
+            inputOptions={{required: true}}
+            placeholder="Estado de la república"
+            className={`rounded-md px-6 py-4 bg-white ${errors.state && '!bg-red-200'}`}
+          />
+
+          <input
+            {...register(
+              'city',
+              {required: true},
+            )}
+            className={errors.city && '!bg-red-200'}
+            placeholder="Ciudad o localidad"/>
+        </div>
+
         <Select
-          options={mexicanStates}
-          name="state"
+          options={[
+            {value: 'aguacate', name: 'Aguacates'},
+            {value: 'berries', name: 'Berries'},
+            {value: 'citricos', name: 'Cítricos'},
+            {value: 'caña-maiz', name: 'Caña y/o maíz'},
+            {value: 'otro', name: 'Otro'},
+          ]}
+          name="cropType"
           inputOptions={{required: true}}
-          placeholder="Selecciona un estado"
+          placeholder="Tipo de cultivo"
           className={`rounded-md px-6 py-4 bg-white ${errors.state && '!bg-red-200'}`}
         />
 
         <input
           {...register(
-            'city',
-            {required: true},
+            'depth',
+            {},
           )}
-          className={errors.city && '!bg-red-200'}
-          placeholder="Ciudad o localidad"/>
+          className={errors.depth && '!bg-red-200'}
+          placeholder="Qué profundidad tiene tu pozo? (mts)"/>
+
+        <input
+          {...register(
+            'caudal',
+            {},
+          )}
+          className={errors.caudal && '!bg-red-200'}
+          placeholder="Caudal requerido? (pulgadas)"/>
 
         <input
           {...register(
